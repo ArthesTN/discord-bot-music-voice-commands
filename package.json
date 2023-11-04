@@ -22,7 +22,6 @@
     "libsodium-wrappers": "^0.7.13",
     "node-blob": "^0.0.2",
     "node-fetch": "^3.3.2",
-    "npm-install-all": "^1.1.21",
     "prism-media": "^1.3.5",
     "spotify-url-info": "^3.2.9",
     "wait-on": "^7.0.1",
