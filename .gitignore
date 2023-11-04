@@ -1,0 +1,12 @@
+.env
+/node_modules/
+/builtInSounds/
+/guildSounds/
+/text2speech/
+speechaudios/*
+!speechaudios/placeholder
+vcnames.json
+names.json
+text2speech
+soundeffectbot.js
+weather.js
