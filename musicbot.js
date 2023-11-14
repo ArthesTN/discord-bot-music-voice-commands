@@ -50,7 +50,9 @@ client.on("ready", () => {
     }
     console.log("Successfully connected.");
 })
-
+client.on('guildCreate', guild => {
+    guildMap.set(guild.id, {...guildSettings})
+});
 // user changing voice state will make bot not listen to user until 3 speechAudio files are clean
 client.on('voiceStateUpdate', async( oldState, newState)=>{
     const oldChannel = oldState.channel
@@ -765,7 +767,7 @@ async function leaveChannel(message){
     }
 }
 function defaultGuildSetting(guildID){
-    guildMap.set(guildID, guildSettings);
+    guildMap.set(guildID, {...guildSettings});
 }    
 async function connectToChannel(message) {
     // check for permission first
