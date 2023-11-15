@@ -287,7 +287,7 @@ const settings = {
     prefix: '!',
 };
 
-const { Player } = require("@arthestn/discord-music-player");
+const { Player } = require("@jadestudios/discord-music-player");
 const player = new Player(client, {
     leaveOnEmpty: true,
     leaveOnStop: false,
@@ -1316,7 +1316,6 @@ client.player
     .on('error', (error, queue) => {
         if (!queue) return
         console.log(`Error: ${error} in ${queue.guild?.name}`);
-        queue.leave()
 
     });
 function wordTimeToSeconds(timeString) {
