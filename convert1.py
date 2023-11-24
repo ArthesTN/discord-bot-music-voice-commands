@@ -2,7 +2,6 @@ import speech_recognition as sr
 import sys
 import os
 r = sr.Recognizer()
-
 harvard = sr.AudioFile(sys.argv[1])
 with harvard as source:
     try:
