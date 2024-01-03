@@ -1403,4 +1403,4 @@ function getFirstNumberFromString(inputString) {
     }
     return null; 
 }
-client.login(process.env.DISCORD_TOKEN2);
+client.login(process.env.DISCORD_TOKEN1);
