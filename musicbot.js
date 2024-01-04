@@ -210,7 +210,7 @@ async function stream2file(passThrough, voiceConnection, user, message, voiceFil
                 voiceFiles.WAV, function (err, stdout, stderr) {
 
                 if (err) {
-                    console.log("pcm to wav error")
+                    console.log("pcm to wav error",err)
                     return
                 }
                 pythonspeech(voiceConnection, user, message, voiceFiles, userId)
