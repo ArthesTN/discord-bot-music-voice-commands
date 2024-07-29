@@ -1316,7 +1316,12 @@ client.player
     .on('error', (error, queue) => {
         if (!queue) return
         console.log(`Error: ${error} in ${queue.guild?.name}`);
-        queue.leave()
+        const message =  queue.data?.queueInitMessage
+        const exampleEmbed = new MessageEmbed()
+        .setDescription(error)
+        const content = { embeds: [exampleEmbed] }
+        sendMessage(message, content)
+
 
     });
 function wordTimeToSeconds(timeString) {
