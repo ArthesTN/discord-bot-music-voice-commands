@@ -1,7 +1,7 @@
 require("dotenv").config();
 const { Client, Intents, Collection, VoiceChannel, GuildMember, MessageEmbed, Permissions } = require("discord.js");
 const { joinVoiceChannel, getVoiceConnection, VoiceConnection,AudioPlayerStatus } = require('@discordjs/voice');
-const { VoiceConnectionStatus, entersState, createAudioPlayer } = require('@discordjs/voice');
+const { VoiceConnectionStatus, entersState, createAudioPlayer, createAudioResource } = require('@discordjs/voice');
 const fs = require("fs");
 const { Readable } = require('stream');
 const ffmpeg = require('ffmpeg');
@@ -140,7 +140,7 @@ async function stream2pcm(voiceConnection, message){
     voiceConnection.receiver.speaking.on('start', userId => {
         const speaker = message.guild.members.cache.get(userId);
         // do not listen to other bots
-        if (speaker && !speaker.user.bot){
+        if (speaker){
             const passThrough = new stream_1.PassThrough();
 
             const opusStream = voiceConnection.receiver.subscribe(userId, {
@@ -840,8 +840,16 @@ async function connectToChannel(message) {
         await sendMessage(message, content)
         stream2pcm(voiceConnection, message)
     }
+    //await testAudio(voiceConnection)
 }
-
+async function testAudio(voiceConnection){
+    const filePath = "song2.opus"
+    let resource = createAudioResource(filePath)
+    let player = createAudioPlayer()
+    voiceConnection.subscribe(player);
+    console.log(resource)
+    player.play(resource);
+}
 async function play(message, search, memberRequester){
     const myCurrChannel = message.guild.members.me.voice.channel
     const memberRequesterChannel = memberRequester.voice.channel

@@ -1,7 +1,8 @@
 const { Client, Intents, Message} = require('discord.js');
-const { joinVoiceChannel, createAudioPlayer, createAudioResource, AudioPlayerStatus } = require('@discordjs/voice');
+const { joinVoiceChannel, createAudioPlayer,createReadStream,StreamType, createAudioResource, AudioPlayerStatus } = require('@discordjs/voice');
 const ytdl = require('ytdl-core');
 const play = require('yt-stream')
+const ffmpeg = require('fluent-ffmpeg')
 require("dotenv").config();
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.MESSAGE_CONTENT] });
 client.once('ready', () => {
@@ -19,9 +20,9 @@ client.on('messageCreate', async message => {
                 guildId: message.guild?.id,
                 adapterCreator: message.guild?.voiceAdapterCreator,
             });
-            let stream = await play.stream(url)
-            let resource = createAudioResource(stream.stream
-            )
+            //let stream = await play.stream(url)
+            const filePath = "song.opus"
+            let resource = createAudioResource(filePath)
             let player = createAudioPlayer()
 
             connection.subscribe(player);

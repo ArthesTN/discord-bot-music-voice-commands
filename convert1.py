@@ -6,7 +6,8 @@ harvard = sr.AudioFile(sys.argv[1])
 with harvard as source:
     try:
         audio = r.record(source)
-        words = r.recognize_google(audio)
+        #words = r.recognize_google(audio)
+        words = ""
         with open(sys.argv[2], "w") as file:
     
             file.write(words)
