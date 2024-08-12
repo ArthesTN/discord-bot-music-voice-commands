@@ -287,7 +287,7 @@ const settings = {
     prefix: '!',
 };
 
-const { Player } = require("@arthestn/discord-music-player");
+const { Player } = require("@jadestudios/discord-music-player");
 const player = new Player(client, {
     leaveOnEmpty: true,
     leaveOnStop: false,
@@ -348,7 +348,7 @@ const commands = {
 }
 // You can define the Player as *client.player* to easily access it.
 client.player = player
-const { RepeatMode } = require('@arthestn/discord-music-player');
+const { RepeatMode } = require('@jadestudios/discord-music-player');
 // text channel could be deleted while in voice channel
 // check if tc still existed before sending a message
 client.on('messageCreate', async (message) => {
