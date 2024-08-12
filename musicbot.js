@@ -140,7 +140,7 @@ async function stream2pcm(voiceConnection, message){
     voiceConnection.receiver.speaking.on('start', userId => {
         const speaker = message.guild.members.cache.get(userId);
         // do not listen to other bots
-        if (speaker){
+        if (speaker && !speaker.bot){
             const passThrough = new stream_1.PassThrough();
 
             const opusStream = voiceConnection.receiver.subscribe(userId, {
