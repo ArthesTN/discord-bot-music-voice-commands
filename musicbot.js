@@ -343,7 +343,7 @@ const commands = {
         help: "not supported", helpFurther: "toggle speech to text of voices in my voice channel"},
     help: {write: "help", emoji: ":sos:", 
         help: "not supported", helpFurther: "other minimized help board"},
-    helpFurther: {write: "helpfurther", emoji: ":sos::sos: ", 
+    helpFurther: {write: "helpfurther", emoji:  ":sos::sos: ", 
         help: "not supported" , helpFurther: "this further clarified help board"}
 }
 // You can define the Player as *client.player* to easily access it.
