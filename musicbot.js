@@ -8,6 +8,9 @@ const ffmpeg = require('ffmpeg');
 var exec = require('child_process').exec;
 const path = require("path")
 const voice_1 = require("@discordjs/voice");
+const { EventEmitter } = require('events');
+EventEmitter.defaultMaxListeners = 10;
+
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -30,7 +33,8 @@ const botSounds = path.join(discordbot2, "botSounds")
 var guildSettings = {
     transcriptionSetting: false,
     joinInitMessageSetting: null,
-    maxQueueSizeSetting: 20
+    maxQueueSizeSetting: 20,
+    maxListenerSetting: new Array()
 }
 var guildMap = new Map()
 client.on("ready", () => {
@@ -57,9 +61,10 @@ client.on('guildCreate', guild => {
 client.on('voiceStateUpdate', async( oldState, newState)=>{
     const oldChannel = oldState.channel
     const newChannel = newState.channel
+    const members = newChannel?.members;
     if (oldChannel !== newChannel){
         if (!newChannel) {
-            if (oldState.member.id !== client.user.id){    
+            if (oldState.member?.id !== client.user.id){    
                 try { 
                     // time out the 3 speech files
                     voiceTimeOut(oldState.member.id)
@@ -71,9 +76,37 @@ client.on('voiceStateUpdate', async( oldState, newState)=>{
 
                 defaultGuildSetting(oldChannel.guildId)
             }
-        }    
+        }
+
     }
 })
+function maxListenerGuildSetting(newState){
+    const channel = newState?.channel
+    if (!channel){
+        return false
+    }
+    const userId = newState.member?.id
+    if (!userId){
+        return
+    }
+    const guildID = newState.guild.id
+    const guildSetting = guildMap.get(guildID);
+    const membersInChannel = channel.members.filter(member => !member.bot);
+    if (userId == client.user.id){
+        guildSetting.maxListenerSetting = new Array()
+        for (let index = 0; index < membersInChannel.length; index ++){
+            guildSetting.maxListenerSetting.push(membersInChannel[index])
+        }
+    }
+    else {
+        if (guildSetting.maxListenerSetting.indexOf(userId) == -1){
+            return
+        }
+        guildSetting.maxListenerSetting.push(userId)
+    }
+    return
+}
+
 async function toggleTranscription(message){
     const guildID = message.guildId
     if (!guildMap.has(guildID)){
@@ -139,10 +172,12 @@ async function stream2pcm(voiceConnection, message){
     user = message.member
     voiceConnection.receiver.speaking.on('start', userId => {
         const speaker = message.guild.members.cache.get(userId);
-        // do not listen to other bots
-        if (speaker && !speaker.bot){
+    
+        // Do not listen to other bots
+        // Listen to the first 10 members
+        // TODO FIX
+        if (speaker && !speaker.bot) {
             const passThrough = new stream_1.PassThrough();
-
             const opusStream = voiceConnection.receiver.subscribe(userId, {
                 end: {
                     behavior: voice_1.EndBehaviorType.AfterSilence,
@@ -201,6 +236,11 @@ async function stream2pcm(voiceConnection, message){
 // pcm to wav
 async function stream2file(passThrough, voiceConnection, user, message, voiceFiles, userId){
     const writer = passThrough.pipe(fs.createWriteStream(voiceFiles.PCM));
+    // check for error for piping pcm files
+    writer.on('error', (err) => {
+        console.error(`File write error for ${voiceFiles.PCM}:`, err.message);
+        return
+    });
     await writer.once("finish", () => {
         fs.access(voiceFiles.PCM, fs.constants.F_OK, (err) => {
             if (err) {
@@ -287,7 +327,7 @@ const settings = {
     prefix: '!',
 };
 
-const { Player } = require("@jadestudios/discord-music-player");
+const { Player } = require("@arthestn/discord-music-player");
 const player = new Player(client, {
     leaveOnEmpty: true,
     leaveOnStop: false,
@@ -348,7 +388,7 @@ const commands = {
 }
 // You can define the Player as *client.player* to easily access it.
 client.player = player
-const { RepeatMode } = require('@jadestudios/discord-music-player');
+const { RepeatMode } = require('@arthestn/discord-music-player');
 // text channel could be deleted while in voice channel
 // check if tc still existed before sending a message
 client.on('messageCreate', async (message) => {

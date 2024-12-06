@@ -2,3 +2,6 @@
 /node_modules/
 speechaudios/*
 !speechaudios/placeholder
+search.js
+streamyt.js
+temp.js
